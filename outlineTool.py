@@ -7,7 +7,7 @@ class outlineTool(object):
     def __init__(self):
         
 
-        self.w = FloatingWindow((250, 230), 'Overlaps and contour direction')
+        self.w = FloatingWindow((250, 230), 'Outline Tool')
 
         x = y = padding = 10
         buttonHeight = 21
