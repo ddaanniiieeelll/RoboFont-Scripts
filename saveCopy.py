@@ -1,4 +1,5 @@
-# menuTitle : Save Copy
+# menuTitle : saveCopy
+# shortCut  : command+shift+alt+s
 # Creates a new .ufo in the same directory with the current date and time as name.
 import time, datetime, os
 from pathlib import Path
