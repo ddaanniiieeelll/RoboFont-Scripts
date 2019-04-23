@@ -70,11 +70,16 @@ class outlineTool(object):
         glyphsWithOverlap = []
         for glyph in font:
             if glyph.hasOverlap():
+                glyph.prepareUndo('mark glyphs with overlaps')
                 glyphsWithOverlap.append(glyph.name)
                 glyph.markColor = 1, 0, 1, 0.5
-        
+                glyph.performUndo()
+
+                
+                
         if not glyphsWithOverlap:
             print('there are no overlaps anymore')
+            
         print(glyphsWithOverlap)
         print()
 
@@ -85,8 +90,10 @@ class outlineTool(object):
         glyph = CurrentGlyph()
 
         if glyph.hasOverlap():
+            glyph.prepareUndo('remove overlap in current glyph')
             glyph.removeOverlap()
             glyph.markColor = None
+            glyph.performUndo()
             print('removed overlap in:', glyph.name)
         
             
@@ -99,8 +106,10 @@ class outlineTool(object):
         print('removed overlap in:')
         for glyph in font:
             if glyph.hasOverlap():
+                glyph.prepareUndo('remove overlap in current glyph')
                 glyph.removeOverlap()
                 glyph.markColor = None
+                glyph.performUndo()
                 print(glyph.name)
         
         
