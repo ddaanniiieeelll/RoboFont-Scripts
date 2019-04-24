@@ -4,9 +4,9 @@
 from vanilla import *
 from mojo.events import addObserver
 
-# markingTool
+########## markingTool
 
-class markGlyphs(object):
+class markingTool(object):
     def __init__(self):
         self.w = FloatingWindow((200, 165))
         self.w.button = Button((10, 10, -10, 20), "mark",
@@ -17,10 +17,11 @@ class markGlyphs(object):
         self.d.usedAsComponentButton = Button((10,70,-10,20), 'used as components', callback=self.usedAsComponentCallback)
         self.w.open()
         # self.d.open()
-        
-###        
+                
     def toggleDrawer(self, sender):
         self.d.toggle()
+
+##### Callbacks
         
     def componentsAndOutlinesCallback(self, sender):
         font = CurrentFont()
@@ -60,8 +61,9 @@ class markGlyphs(object):
             baseGlyph.performUndo()
         print('\n')
 
-#############################################################################################################################
-#outlineTool 
+########## outlineTool 
+
+##### remove overlaps
 
 class removeOverlaps(object):
 
@@ -74,7 +76,7 @@ class removeOverlaps(object):
         self.w.open()
         
         
-## Callbacks
+##### Callbacks to remove Overlaps
 
     def removeCurrentButton(self, sender):
         
@@ -112,7 +114,7 @@ class removeOverlaps(object):
     def closeCallback(self, sender):
         self.w.close()
 
-##############
+##### set the direction
 
 
 class setDirection(object):
@@ -126,9 +128,8 @@ class setDirection(object):
         self.w.myTextBox = TextBox((10, 130, -10, 17), 'changing the paths direction')
         self.w.closeButton = Button((-90, -30, 80, 22), 'close', self.closeCallback)
         self.w.open()
-        
-        
-## Callbacks
+                
+##### Callbacks to set the direction
 
     def setPSButton(self, sender):
         
@@ -204,17 +205,13 @@ class outlineTool(object):
     def setDirectionCallback(self, sender):
          setDirection(self.w)
 
-#############################################################################################################################
+########## SoftOtterTool in Inspector
 
 class SoftOtterTools(object):
 
     def __init__(self):
         # subscribe to the moment when an inspector will be shown
         addObserver(self, "inspectorWindowWillShowDescriptions", "inspectorWindowWillShowDescriptions")
-        # # subscribe to the moment when a glyph window will be shown
-        # addObserver(self, "glyphWindowWillShowToolbarItems", "glyphWindowWillShowToolbarItems")
-        # # subscribe to the moment when a font window will be shown
-        # addObserver(self, "fontWindowWillShowToolbarItems", "fontWindowWillShowToolbarItems")
         # keep a reference of the view inserted in the inspector
         self.editor = Group((0, 0, -0, -0))
         self.editor.markingToolButton = Button((10,10,-10,20), 'Marking Tool', callback=self.markingToolCallback)
@@ -227,24 +224,11 @@ class SoftOtterTools(object):
         notification["descriptions"].insert(1, item)
         
     def markingToolCallback(self, sender):
-        markGlyphs()
+        markingTool()
         
     def outlineToolCallback(self, sender):
         outlineTool()
 
-    # def glyphWindowWillShowToolbarItems(self, notification):
-    #     # create a toolbar item
-    #     item = dict(itemIdentifier="customGlyphToolbar", label="Do It", callback=self.doIt, imageNamed="toolbarRun")
-    #     # insert or append the item to the list of glyph window toolbar items
-    #     notification["toolbarItems"].insert(-2, item)
-
-    # def fontWindowWillShowToolbarItems(self, notification):
-    #     # create a toolbar item
-    #     item = dict(itemIdentifier="customFontToolbar", label="Do It", callback=self.doIt, imageNamed="toolbarRun")
-    #     # insert or append the item to the list of font window toolbar items
-    #     notification["toolbarItems"].insert(2, item)
-
-    # def doIt(self, sender):
-    #     print("do it")
+    
 
 SoftOtterTools()
