@@ -7,6 +7,9 @@ Notice that you will stay in your original sourcefile.
 Added a shortCut so saving is more accessible.
 Also the output window gives the path to the saveCopied .ufo (it should be next to the source, but just in case)
 
+## SoftOtterTool
+Used as a Start-Up Script this adds a custom panel to the inspector containing the outlineTool and the markingTool
+
 ## outlineTool
 A set of handy functions 
 - **mark all glyphs with overlaps**  
@@ -24,8 +27,11 @@ sets the contour of the current glyph to TT direction
 - **set all glyphs to TT direction**  
 sets the contours of all the glyphs to TT direction
 
-**ToDo:**  
-- [ ] add undo option  
-- [ ] come up with a good shortCut or menu button
-
-*script is still in the development phase, no guarantee that it does what you want (or does anything at all), so use carefull and better use the saveCopy before messing with this thing.*
+## markingTool
+Tool to mark certain glyphs   
+- **composites and outlines**  
+marks glyphs that contain both, components and outlines  
+- **components**  
+marks glyphs that only consist of components  
+- **used as components**  
+marks the glyphs that are used as components in the current glyph
