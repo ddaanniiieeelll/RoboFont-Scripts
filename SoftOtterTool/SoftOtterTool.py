@@ -2,27 +2,44 @@
 
 
 from vanilla import *
+from mojo.UI import *
 from mojo.events import addObserver
 
 ########## markingTool
 
-class markingTool(object):
+class markGlyphs(object):
     def __init__(self):
-        self.w = FloatingWindow((200, 165))
-        self.w.button = Button((10, 10, -10, 20), "mark",
-                            callback=self.toggleDrawer)
+        # The Tool Window
+        self.w = FloatingWindow((200, 165), 'Marking Tool')
+        self.w.buttonMark = Button((10, 10, -10, 20), '<- mark', callback=self.toggleMarkDrawer)
+        self.w.buttonGroup = Button((10, 40, -10, 20), 'make group ->', callback=self.toggleGroupDrawer)
+        # mark drawer
         self.d = Drawer((180, 120), self.w)
-        self.d.componentsAndOutlinesButton = Button((10, 10, -10, 20), "comp. + outlines", callback=self.componentsAndOutlinesCallback)
+        self.d.componentsAndOutlinesButton = Button((10, 10, -10, 20), 'comp. + outlines', callback=self.componentsAndOutlinesCallback)
         self.d.componentsButton = Button((10,40,-10,20), 'components', callback=self.componentsCallback)
         self.d.usedAsComponentButton = Button((10,70,-10,20), 'used as components', callback=self.usedAsComponentCallback)
+        self.d.markOverlapButton = Button((10,100,-10,20), 'mark overlaps', callback=self.markOverlapCallback)
+        # group drawer
+        self.g = Drawer((180, 120), self.w, preferredEdge = 'right')
+        self.g.componentsAndOutlinesGroupButton = Button((10, 10, -10, 20), 'comp. + outlines', callback=self.componentsAndOutlinesGroupCallback)
+        self.g.componentsGroupButton = Button((10, 40, -10, 20), 'components', callback=self.componentsGroupCallback)
+        # self.g.usedAsComponentsGroupButton = Button((10,70,-10,20), 'used as components', callback=self.usedAsComponentsGroupCallback)
+        
         self.w.open()
         # self.d.open()
                 
-    def toggleDrawer(self, sender):
-        self.d.toggle()
+    
 
 ##### Callbacks
+    # open mark drawer
+    def toggleDrawer(self, sender):
+        self.d.toggle()
+    
+    # open group drawer
+    def toggleGroupDrawer(self, sender):
+        self.g.toggle()
         
+    ##### mark Callbacks
     def componentsAndOutlinesCallback(self, sender):
         font = CurrentFont()
         glyph = CurrentGlyph()
@@ -35,7 +52,7 @@ class markingTool(object):
                 print(glyph.name, end=" ")
         print('\n')
         
-                
+    
     def componentsCallback(self,sender):
         font = CurrentFont()
         glyph = CurrentGlyph()
@@ -60,6 +77,41 @@ class markingTool(object):
             baseGlyph.markColor = 0.5, 0, 1, 0.35
             baseGlyph.performUndo()
         print('\n')
+        
+    def markOverlapCallback(self, sender):
+        font = CurrentFont()
+        glyph = CurrentGlyph()
+        
+        print('>>> Glyphs with overlaps')
+        for glyph in font:
+            if glyph.hasOverlap():
+                print(glyph.name, end = " ")
+                glyph.prepareUndo('mark overlaps')
+                glyph.markColor = 0.5, 0, 0.2, 0.75
+                glyph.performUndo()
+        print('\n')
+        
+    ##### group Callbacks
+    def componentsAndOutlinesGroupCallback(self, sender):
+        contoursAndComponentsGroup = SmartSet()
+        contoursAndComponentsGroup.name = 'components and outlines'
+        contoursAndComponentsGroup.query = 'Contours > 0 and Components >0'
+        addSmartSet(contoursAndComponentsGroup)
+        updateAllSmartSets()
+        
+    def componentsGroupCallback(self, sender):
+        componentsGroup = SmartSet()
+        componentsGroup.name = 'components'
+        componentsGroup.query = 'Contours == 0 and Components > 0'
+        addSmartSet(componentsGroup)
+        updateAllSmartSets()
+        
+    # def usedAsComponentsGroupCallback(self, sender):
+    #     usedAsComponentsGroup = SmartSet()
+    #     usedAsComponentsGroup.name = 'used as components'
+    #     usedAsComponentsGroup.query = 'Color = 0.5, 0, 1, 0.35'
+    #     addSmartSet(usedAsComponentsGroup)
+    #     updateAllSmartSets()
 
 ########## outlineTool 
 
@@ -68,6 +120,7 @@ class markingTool(object):
 class removeOverlaps(object):
 
     def __init__(self, parentWindow):
+        # The Tool Window
         self.w = Sheet((250, 100), parentWindow)
         self.w.removeButton = Button((10, 10, -10, 20), "remove overlap in current glyph", callback=self.removeCurrentButton)
         self.w.removeAllButton = Button((10, 40, -10, 20), "remove overlap in all glyphs", callback=self.removeAllButton)
@@ -193,15 +246,15 @@ class setDirection(object):
 class outlineTool(object):
 
     def __init__(self):
-
+        # The Tool Window
         self.w = FloatingWindow((300, 75), title='Outline Tool')
         self.w.overlaps = Button((10, 10, -10, 22), "remove overlaps", callback=self.removeOverlapsCallback)
         self.w.direction = Button((10, 40, -10, 22), 'direction', callback=self.setDirectionCallback)
         self.w.open()
-
+    # open the remove overlaps sheet
     def removeOverlapsCallback(self, sender):
         removeOverlaps(self.w) 
-        
+    # open the set direction sheet
     def setDirectionCallback(self, sender):
          setDirection(self.w)
 
