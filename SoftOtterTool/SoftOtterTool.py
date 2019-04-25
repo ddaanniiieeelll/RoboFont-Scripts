@@ -7,10 +7,10 @@ from mojo.events import addObserver
 
 ########## markingTool
 
-class markGlyphs(object):
+class markingTool(object):
     def __init__(self):
         # The Tool Window
-        self.w = FloatingWindow((200, 165), 'Marking Tool')
+        self.w = FloatingWindow((200, 195), 'Marking Tool')
         self.w.buttonMark = Button((10, 10, -10, 20), '<- mark', callback=self.toggleMarkDrawer)
         self.w.buttonGroup = Button((10, 40, -10, 20), 'make group ->', callback=self.toggleGroupDrawer)
         # mark drawer
@@ -32,7 +32,7 @@ class markGlyphs(object):
 
 ##### Callbacks
     # open mark drawer
-    def toggleDrawer(self, sender):
+    def toggleMarkDrawer(self, sender):
         self.d.toggle()
     
     # open group drawer
