@@ -12,7 +12,7 @@ class markGlyphs(object):
         self.d.componentsAndOutlinesButton = Button((10, 10, -10, 20), 'comp. + outlines', callback=self.componentsAndOutlinesCallback)
         self.d.componentsButton = Button((10,40,-10,20), 'components', callback=self.componentsCallback)
         self.d.usedAsComponentButton = Button((10,70,-10,20), 'used as components', callback=self.usedAsComponentCallback)
-        self.d.hasOverlapButton = Button((10,100,-10,20), 'has overlaps', callback=self.hasOverlapCallback)
+        self.d.markOverlapButton = Button((10,100,-10,20), 'mark overlaps', callback=self.markOverlapCallback)
         # group drawer
         self.g = Drawer((180, 120), self.w, preferredEdge = 'right')
         self.g.componentsAndOutlinesGroupButton = Button((10, 10, -10, 20), 'comp. + outlines', callback=self.componentsAndOutlinesGroupCallback)
@@ -68,16 +68,18 @@ class markGlyphs(object):
             baseGlyph.performUndo()
         print('\n')
         
-    def hasOverlapCallback(self, sender):
+    def markOverlapCallback(self, sender):
         font = CurrentFont()
         glyph = CurrentGlyph()
-
+    
+        print('>>> Glyphs with overlaps')
         for glyph in font:
             if glyph.hasOverlap():
-                print(glyph.name)
+                print(glyph.name, end = " ")
                 glyph.prepareUndo('mark overlaps')
                 glyph.markColor = 0.5, 0, 0.2, 0.75
                 glyph.performUndo()
+        print('\n')
             
         
     ##### group Callbacks
