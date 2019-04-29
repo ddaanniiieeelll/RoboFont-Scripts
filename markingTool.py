@@ -1,12 +1,12 @@
-from vanilla import * 
+from vanilla import *
 from mojo.UI import *
 
 class markGlyphs(object):
     def __init__(self):
         # The Tool Window
-        self.w = FloatingWindow((200, 195), 'Marking Tool')
-        self.w.buttonMark = Button((10, 10, -10, 20), '<- mark', callback=self.toggleMarkDrawer)
-        self.w.buttonGroup = Button((10, 40, -10, 20), 'make group ->', callback=self.toggleGroupDrawer)
+        self.w = FloatingWindow((1800, 300, 200, 195), 'Marking Tool')
+        self.w.buttonMark = Button((10, 10, -10, 20), '\u2190 mark', callback=self.toggleMarkDrawer)
+        self.w.buttonGroup = Button((10, 40, -10, 20), 'make group \u2192', callback=self.toggleGroupDrawer)
         # mark drawer
         self.d = Drawer((180, 160), self.w)
         self.d.componentsAndOutlinesButton = Button((10, 10, -10, 20), 'comp. + outlines', callback=self.componentsAndOutlinesCallback)
@@ -18,18 +18,18 @@ class markGlyphs(object):
         self.g.componentsAndOutlinesGroupButton = Button((10, 10, -10, 20), 'comp. + outlines', callback=self.componentsAndOutlinesGroupCallback)
         self.g.componentsGroupButton = Button((10, 40, -10, 20), 'components', callback=self.componentsGroupCallback)
         # self.g.usedAsComponentsGroupButton = Button((10,70,-10,20), 'used as components', callback=self.usedAsComponentsGroupCallback)
-        
+
         self.w.open()
         # self.d.open()
-        
+
 ##### Callbacks
-    # open mark drawer       
+    # open mark drawer
     def toggleMarkDrawer(self, sender):
         self.d.toggle()
     # open group drawer
     def toggleGroupDrawer(self, sender):
         self.g.toggle()
-    ##### mark Callbacks    
+    ##### mark Callbacks
     def componentsAndOutlinesCallback(self, sender):
         font = CurrentFont()
         glyph = CurrentGlyph()
@@ -39,10 +39,10 @@ class markGlyphs(object):
                 glyph.prepareUndo('mark components and outlines')
                 glyph.markColor = 1, 0, 0.5, 0.35
                 glyph.performUndo()
-                print(glyph.name, end=" ")
+                print(glyph.name, end = " ")
         print('\n')
-        
-                
+
+
     def componentsCallback(self,sender):
         font = CurrentFont()
         glyph = CurrentGlyph()
@@ -54,7 +54,7 @@ class markGlyphs(object):
                 glyph.performUndo()
                 print(glyph.name, end = " ")
         print('\n')
-        
+
     def usedAsComponentCallback(self, sender):
         font = CurrentFont()
         glyph = CurrentGlyph()
@@ -67,11 +67,11 @@ class markGlyphs(object):
             baseGlyph.markColor = 0.5, 0, 1, 0.35
             baseGlyph.performUndo()
         print('\n')
-        
+
     def markOverlapCallback(self, sender):
         font = CurrentFont()
         glyph = CurrentGlyph()
-    
+
         print('>>> Glyphs with overlaps')
         for glyph in font:
             if glyph.hasOverlap():
@@ -80,8 +80,8 @@ class markGlyphs(object):
                 glyph.markColor = 0.5, 0, 0.2, 0.75
                 glyph.performUndo()
         print('\n')
-            
-        
+
+
     ##### group Callbacks
     def componentsAndOutlinesGroupCallback(self, sender):
         contoursAndComponentsGroup = SmartSet()
@@ -89,21 +89,21 @@ class markGlyphs(object):
         contoursAndComponentsGroup.query = 'Contours > 0 and Components >0'
         addSmartSet(contoursAndComponentsGroup)
         updateAllSmartSets()
-        
+
     def componentsGroupCallback(self, sender):
         componentsGroup = SmartSet()
         componentsGroup.name = 'components'
         componentsGroup.query = 'Contours == 0 and Components > 0'
         addSmartSet(componentsGroup)
         updateAllSmartSets()
-        
+
     # def usedAsComponentsGroupCallback(self, sender):
     #     usedAsComponentsGroup = SmartSet()
     #     usedAsComponentsGroup.name = 'used as components'
     #     usedAsComponentsGroup.query = 'Color = 0.5, 0, 1, 0.35'
     #     addSmartSet(usedAsComponentsGroup)
     #     updateAllSmartSets()
-    
-    
-        
+
+
+
 markGlyphs()
