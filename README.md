@@ -8,7 +8,10 @@ Added a shortCut so saving is more accessible.
 Also the output window gives the path to the saveCopied .ufo (it should be next to the source, but just in case)
 
 ## SoftOtterTool
-Used as a Start-Up Script this adds a custom panel to the inspector containing the outlineTool and the markingTool
+Used as a Start-Up Script this adds a custom panel to the inspector containing the outlineTool and the markingTool.
+
+**Note:** As I described in my [post](https://forum.robofont.com/topic/631/hasoverlap-does-not-detect-all-overlaps) in the RF Forum, there is no overlap detected when the outline goes through 2 points. Therefore the *Remove overlap* button in this tool will not work in that case. The built-in remove overlap function in the context menu of the glyph however works as expected.  
+I'll try to find a way to work this out.
 
 ## outlineTool
 A set of handy functions 
