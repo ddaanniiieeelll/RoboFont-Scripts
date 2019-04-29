@@ -131,7 +131,7 @@ class outlineTool(object):
 
     def __init__(self):
 
-        self.w = FloatingWindow((300, 75), title='Outline Tool')
+        self.w = FloatingWindow((1800, 550, 250, 75), title='Outline Tool')
         self.w.overlaps = Button((10, 10, -10, 22), "remove overlaps", callback=self.removeOverlapsCallback)
         self.w.direction = Button((10, 40, -10, 22), 'direction', callback=self.setDirectionCallback)
         self.w.open()
