@@ -39,3 +39,5 @@ marks glyphs that contain both, components and outlines
 marks glyphs that only consist of components  
 - **used as components**  
 marks the glyphs that are used as components in the current glyph
+
+Additionally the markingTool now has an option to create Smart Sets that include thhe glyphs with components and outlines and glyphs that are completely made of components. 
