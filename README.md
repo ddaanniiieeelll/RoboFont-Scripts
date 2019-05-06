@@ -12,10 +12,10 @@ Used as a Start-Up Script this adds a custom panel to the inspector containing t
 
 **Note:** As I described in my [post](https://forum.robofont.com/topic/631/hasoverlap-does-not-detect-all-overlaps) in the RF Forum, there is no overlap detected when the outline goes through 2 points. Therefore the *Remove overlap* button in this tool will not work in that case. The built-in remove overlap function in the context menu of the glyph however works as expected.  
 I'll try to find a way to work this out.  
-**Edit:** following my initial post [gferreira](https://github.com/gferreira) filed an [issue](https://github.com/typemytype/booleanOperations/issues/54). As [typemytype](https://github.com/typemytype) explains  `getIntersections()` just returns new points. In this case there are no *new* points, but the already existing points are used. 
+**Edit:** following my initial post [gferreira](https://github.com/gferreira) filed an [issue](https://github.com/typemytype/booleanOperations/issues/54). As [typemytype](https://github.com/typemytype) explains  `getIntersections()` just returns new points. In this case there are no *new* points, but the already existing points are used.
 
 ## outlineTool
-A set of handy functions 
+A set of handy functions
 - **mark all glyphs with overlaps**  
 checks all glyphs and marks the ones with overlaps
 - **remove overlaps in current glyph**  
@@ -40,4 +40,4 @@ marks glyphs that only consist of components
 - **used as components**  
 marks the glyphs that are used as components in the current glyph
 
-Additionally the markingTool now has an option to create Smart Sets that include thhe glyphs with components and outlines and glyphs that are completely made of components. 
+Additionally the markingTool now has an option to create Smart Sets that include the glyphs with components and outlines and glyphs that are completely made of components. 
