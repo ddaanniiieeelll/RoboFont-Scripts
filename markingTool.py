@@ -32,8 +32,9 @@ class markGlyphs(object):
     ##### mark Callbacks
     def componentsAndOutlinesCallback(self, sender):
         font = CurrentFont()
-        glyph = CurrentGlyph()
-        print('>>> Glyphs combining components and outlines:\n')
+        # glyph = CurrentGlyph()
+        print('>>> Glyphs combining components and outlines:')
+        print('---------------------------------------------')
         for glyph in font:
             if len(glyph.contours) > 0 and len(glyph.components) > 0:
                 glyph.prepareUndo('mark components and outlines')
@@ -45,8 +46,9 @@ class markGlyphs(object):
 
     def componentsCallback(self,sender):
         font = CurrentFont()
-        glyph = CurrentGlyph()
-        print('>>> Glyphs completely made out of components:\n')
+        # glyph = CurrentGlyph()
+        print('>>> Glyphs completely made out of components:')
+        print('---------------------------------------------')
         for glyph in font:
             if len(glyph.contours) == 0 and len(glyph.components) > 0:
                 glyph.prepareUndo('mark components')
@@ -59,7 +61,8 @@ class markGlyphs(object):
         font = CurrentFont()
         glyph = CurrentGlyph()
 
-        print('>>> These glyphs are used as components\n')
+        print('>>> These glyphs are used as components')
+        print('---------------------------------------')
         for component in glyph.components:
             baseGlyph = font[component.baseGlyph]
             print(component.baseGlyph)
@@ -70,11 +73,14 @@ class markGlyphs(object):
 
     def markOverlapCallback(self, sender):
         font = CurrentFont()
-        glyph = CurrentGlyph()
+        # glyph = CurrentGlyph()
 
         print('>>> Glyphs with overlaps')
+        print('------------------------')
         for glyph in font:
-            if glyph.hasOverlap():
+            compareGlyph = glyph.copy()
+            compareGlyph.removeOverlap()
+            if len(glyph) != len(compareGlyph) or glyph.hasOverlap():
                 print(glyph.name, end = " ")
                 glyph.prepareUndo('mark overlaps')
                 glyph.markColor = 0.5, 0, 0.2, 0.75
