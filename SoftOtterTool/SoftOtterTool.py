@@ -34,42 +34,43 @@ class markingTool(object):
     # open mark drawer
     def toggleMarkDrawer(self, sender):
         self.d.toggle()
-
     # open group drawer
     def toggleGroupDrawer(self, sender):
         self.g.toggle()
-
     ##### mark Callbacks
     def componentsAndOutlinesCallback(self, sender):
         font = CurrentFont()
-        glyph = CurrentGlyph()
-        print('>>> Glyphs combining components and outlines:\n')
+        # glyph = CurrentGlyph()
+        print('>>> Glyphs combining components and outlines:')
+        print('---------------------------------------------')
         for glyph in font:
             if len(glyph.contours) > 0 and len(glyph.components) > 0:
                 glyph.prepareUndo('mark components and outlines')
                 glyph.markColor = 1, 0, 0.5, 0.35
                 glyph.performUndo()
-                print(glyph.name, end=" ")
+                print(glyph.name, end = " ")
         print('\n')
 
 
     def componentsCallback(self,sender):
         font = CurrentFont()
-        glyph = CurrentGlyph()
-        print('>>> Glyphs completely made out of components:\n')
+        # glyph = CurrentGlyph()
+        print('>>> Glyphs completely made out of components:')
+        print('---------------------------------------------')
         for glyph in font:
             if len(glyph.contours) == 0 and len(glyph.components) > 0:
                 glyph.prepareUndo('mark components')
                 glyph.markColor = 0, 0.25, 0.5, 0.35
                 glyph.performUndo()
-                print(glyph.name, end = ", ")
+                print(glyph.name, end = " ")
         print('\n')
 
     def usedAsComponentCallback(self, sender):
         font = CurrentFont()
         glyph = CurrentGlyph()
 
-        print('>>> These glyphs are used as components\n')
+        print('>>> These glyphs are used as components')
+        print('---------------------------------------')
         for component in glyph.components:
             baseGlyph = font[component.baseGlyph]
             print(component.baseGlyph)
@@ -80,12 +81,15 @@ class markingTool(object):
 
     def markOverlapCallback(self, sender):
         font = CurrentFont()
-        glyph = CurrentGlyph()
+        # glyph = CurrentGlyph()
 
-        print('>>> Glyphs with overlaps\n')
+        print('>>> Glyphs with overlaps')
+        print('------------------------')
         for glyph in font:
-            if glyph.hasOverlap():
-                print(glyph.name, end = ", ")
+            compareGlyph = glyph.copy()
+            compareGlyph.removeOverlap()
+            if len(glyph) != len(compareGlyph) or glyph.hasOverlap():
+                print(glyph.name, end = " ")
                 glyph.prepareUndo('mark overlaps')
                 glyph.markColor = 0.5, 0, 0.2, 0.75
                 glyph.performUndo()
@@ -131,36 +135,39 @@ class removeOverlaps(object):
 
 ##### Callbacks to remove Overlaps
 
-    def removeCurrentButton(self, sender):
-
+        def removeCurrentButton(self, sender):
+        
         font = CurrentFont()
         glyph = CurrentGlyph()
 
-        if glyph.hasOverlap():
-            glyph.prepareUndo('remove overlap in current glyph')
-            glyph.removeOverlap()
-            glyph.markColor = None
-            glyph.performUndo()
-            print('>>> Removed overlap in:', glyph.name)
-            self.w.close()
-        print('\n')
-
+        # if glyph.hasOverlap():
+        glyph.prepareUndo('remove overlap in current glyph')
+        glyph.removeOverlap()
+        glyph.markColor = None
+        glyph.performUndo()
+        print('>>> Removed overlap in:', glyph.name)
+        self.w.close()
+        print()
+        
     def removeAllButton(self,sender):
         font = CurrentFont()
-        glyph = CurrentGlyph()
-
-        print('>>> Removed overlap in:\n')
+        # glyph = CurrentGlyph()
+    
+        print('>>> Removed overlap in:')
+        print('-----------------------')
         for glyph in font:
-            if glyph.hasOverlap():
+            compareGlyph = glyph.copy()
+            compareGlyph.removeOverlap()
+            if glyph.hasOverlap() or len(glyph) != len(compareGlyph):
                 glyph.prepareUndo('remove overlap in current glyph')
                 glyph.removeOverlap()
                 glyph.markColor = None
                 glyph.performUndo()
-                print(glyph.name, end = ", ")
+                print(glyph.name, end = ' ')
         print('\n')
         self.w.close()
 
-
+        
 
 
 
@@ -185,50 +192,53 @@ class setDirection(object):
 ##### Callbacks to set the direction
 
     def setPSButton(self, sender):
-
+        
         font = CurrentFont()
         glyph = CurrentGlyph()
+
 
         for contour in glyph.contours:
             glyph.correctDirection(trueType=False)
         print('>>> Corrected the direction of _%s_ following the PostScript recommendations' % glyph.name)
         glyph.changed()
-        print('\n')
+        print()
         self.w.close()
-
+        
     def setAllPSButton(self,sender):
         font = CurrentFont()
         glyph = CurrentGlyph()
-
+        
         print('>>> All outlines set to PS')
         for glyph in font:
             for contour in glyph.contours:
                 glyph.correctDirection(trueType=False)
             glyph.changed()
-        print('\n')
+        
+        print()
         self.w.close()
-
+        
     def setTTButton(self, sender):
         font = CurrentFont()
         glyph = CurrentGlyph()
-
+        
         for contour in glyph.contours:
             glyph.correctDirection(trueType=True)
         print('>>> Corrected the direction of _%s_ following the TrueType recommendations' % glyph.name)
         glyph.changed()
-        print('\n')
+        print()
         self.w.close()
 
     def setAllTTButton(self,sender):
         font = CurrentFont()
         glyph = CurrentGlyph()
-
+        
         print('>>> All outlines set to TT')
         for glyph in font:
             for contour in glyph.contours:
                 glyph.correctDirection(trueType=True)
             glyph.changed()
-        print('\n')
+        
+        print()
         self.w.close()
 
 
