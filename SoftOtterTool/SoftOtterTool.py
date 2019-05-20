@@ -136,23 +136,23 @@ class removeOverlaps(object):
 ##### Callbacks to remove Overlaps
 
         def removeCurrentButton(self, sender):
-        
-        font = CurrentFont()
-        glyph = CurrentGlyph()
 
-        # if glyph.hasOverlap():
-        glyph.prepareUndo('remove overlap in current glyph')
-        glyph.removeOverlap()
-        glyph.markColor = None
-        glyph.performUndo()
-        print('>>> Removed overlap in:', glyph.name)
-        self.w.close()
-        print()
-        
+            font = CurrentFont()
+            glyph = CurrentGlyph()
+
+            # if glyph.hasOverlap():
+            glyph.prepareUndo('remove overlap in current glyph')
+            glyph.removeOverlap()
+            glyph.markColor = None
+            glyph.performUndo()
+            print('>>> Removed overlap in:', glyph.name)
+            self.w.close()
+            print()
+
     def removeAllButton(self,sender):
         font = CurrentFont()
         # glyph = CurrentGlyph()
-    
+
         print('>>> Removed overlap in:')
         print('-----------------------')
         for glyph in font:
@@ -167,7 +167,7 @@ class removeOverlaps(object):
         print('\n')
         self.w.close()
 
-        
+
 
 
 
@@ -192,7 +192,7 @@ class setDirection(object):
 ##### Callbacks to set the direction
 
     def setPSButton(self, sender):
-        
+
         font = CurrentFont()
         glyph = CurrentGlyph()
 
@@ -203,24 +203,24 @@ class setDirection(object):
         glyph.changed()
         print()
         self.w.close()
-        
+
     def setAllPSButton(self,sender):
         font = CurrentFont()
         glyph = CurrentGlyph()
-        
+
         print('>>> All outlines set to PS')
         for glyph in font:
             for contour in glyph.contours:
                 glyph.correctDirection(trueType=False)
             glyph.changed()
-        
+
         print()
         self.w.close()
-        
+
     def setTTButton(self, sender):
         font = CurrentFont()
         glyph = CurrentGlyph()
-        
+
         for contour in glyph.contours:
             glyph.correctDirection(trueType=True)
         print('>>> Corrected the direction of _%s_ following the TrueType recommendations' % glyph.name)
@@ -231,13 +231,13 @@ class setDirection(object):
     def setAllTTButton(self,sender):
         font = CurrentFont()
         glyph = CurrentGlyph()
-        
+
         print('>>> All outlines set to TT')
         for glyph in font:
             for contour in glyph.contours:
                 glyph.correctDirection(trueType=True)
             glyph.changed()
-        
+
         print()
         self.w.close()
 
