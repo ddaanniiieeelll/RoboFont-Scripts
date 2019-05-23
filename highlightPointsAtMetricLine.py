@@ -34,12 +34,13 @@ class highlightPointsOnMetrics(BaseWindowController):
 
         # get the current glyph
         glyph = info["glyph"]
+        sc = info['scale']
 
         asc = f.info.ascender
         xhe = f.info.xHeight
         cap = f.info.capHeight
         dsc = f.info.descender
-        size = 8
+        size = 8 * sc
         # draw highlight
         stroke(None)
         if glyph is not None:
@@ -49,10 +50,10 @@ class highlightPointsOnMetrics(BaseWindowController):
                         if p.y == asc or p.y == xhe or p.y == cap or p.y == dsc or p.y == 0:
 
                             # fill(1, 0, 0, .6)
-
+                            
                             fill(None)
-                            stroke(1, 0, 0, .6)
-                            strokeWidth(2)
+                            stroke(0, 0.8, 0.8, .8)
+                            strokeWidth(3 * sc)
                             rect(p.x-size/2, p.y-size/2, size, size)
 
 highlightPointsOnMetrics()
