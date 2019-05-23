@@ -135,19 +135,19 @@ class removeOverlaps(object):
 
 ##### Callbacks to remove Overlaps
 
-        def removeCurrentButton(self, sender):
+    def removeCurrentButton(self, sender):
 
-            font = CurrentFont()
-            glyph = CurrentGlyph()
+        font = CurrentFont()
+        glyph = CurrentGlyph()
 
-            # if glyph.hasOverlap():
-            glyph.prepareUndo('remove overlap in current glyph')
-            glyph.removeOverlap()
-            glyph.markColor = None
-            glyph.performUndo()
-            print('>>> Removed overlap in:', glyph.name)
-            self.w.close()
-            print()
+        # if glyph.hasOverlap():
+        glyph.prepareUndo('remove overlap in current glyph')
+        glyph.removeOverlap()
+        glyph.markColor = None
+        glyph.performUndo()
+        print('>>> Removed overlap in:', glyph.name)
+        self.w.close()
+        print()
 
     def removeAllButton(self,sender):
         font = CurrentFont()
