@@ -4,22 +4,22 @@ from defconAppKit.windows.baseWindow import BaseWindowController
 
 
 class markingTool(BaseWindowController):
-    
+
     def __init__(self):
         self.w = FloatingWindow((1800, 550, 310, 170), 'Marking Tool')
-        
+
         self.w.checkBoxOverlaps = CheckBox((10,10,-10,20), 'Overlaps', callback=self.checkBoxOverlapsCallback)
         self.w.checkBoxComponents = CheckBox((10,40,-10,20), 'Components', callback=self.checkBoxComponentsCallback)
         self.w.checkBoxComponentsAndOutlines = CheckBox((10,70,-10,20), 'Components and Outlines', callback=self.checkBoxComponentsAndOutlinesCallback)
         # self.w.checkBoxUsedAsComponents = CheckBox((10,100,-10,20), 'Used as components')
-        
-        self.w.buttonCheck = Button((10, -30, 90, 15), 'Mark', sizeStyle = 'small', callback=self.showProgress)
-        self.w.buttonGroup = Button((110, -30, 90, 15), 'Group', sizeStyle = 'small', callback=self.showProgressGroups)
+
+        self.w.buttonCheck = Button((10, -30, 90, 15), 'Mark', sizeStyle = 'small', callback=self.checks)
+        self.w.buttonGroup = Button((110, -30, 90, 15), 'Group', sizeStyle = 'small', callback=self.groups)
         self.w.buttonClose = Button((210, -30, 90, 15), 'Close', sizeStyle = 'small', callback=self.closeWindow)
-        
+
         self.w.open()
-        
-        
+
+
     def closeWindow(self, sender):
         self.w.close()
 
@@ -37,43 +37,43 @@ class markingTool(BaseWindowController):
     # def checkBoxUsedAsComponentsCallback(self, sender):
     #     sender.get()
 
-    
-    
-    def showProgress(self, sender):
+
+
+    def checks(self, sender):
         if self.w.checkBoxOverlaps.get():
             self.progress = self.startProgress('looking for overlaps')
             self.checkOverlaps(f)
             self.progress.close()
-            
+
         if self.w.checkBoxComponents.get():
             self.progress = self.startProgress('looking for components')
             self.checkComponents(f)
             self.progress.close()
-            
+
         if self.w.checkBoxComponentsAndOutlines.get():
             self.progress =self.startProgress('looking for glyphs with components and outlines')
             self.checkComponentsAndOutlines(f)
             self.progress.close()
-            
+
         # if self.w.checkBoxUsedAsComponents.get():
         #     self.progress = self.startProgress('looking where outline is used as component')
         #     # self.checkUsedAsComponents(f)
         #     self.progress.close()
-        
-    def showProgressGroups(self, sender):
+
+    def groups(self, sender):
         if self.w.checkBoxComponents.get():
             self.progress = self.startProgress('looking for components')
             self.groupComponents(f)
             self.progress.close()
-            
+
         if self.w.checkBoxComponentsAndOutlines.get():
             self.progress =self.startProgress('looking for glyphs with components and outlines')
             self.groupComponentsAndOutlines(f)
             self.progress.close()
-        
-        
+
+
         # self.w.close()
-        
+
     def checkOverlaps(self, f):
         self.progress.setTickCount(len(f))
         print()
@@ -88,10 +88,10 @@ class markingTool(BaseWindowController):
                 glyph.markColor = 0.5, 0, 0.2, 0.75
                 # glyph.performUndo()
                 print(glyph.name, end = ", ")
-                
+
         # f.update()
         print()
-        
+
     def checkComponents(self, f):
         self.progress.setTickCount(len(f))
         print()
@@ -104,10 +104,10 @@ class markingTool(BaseWindowController):
                 glyph.markColor = 0, 0.25, 0.5, 0.35
                 # glyph.performUndo()
                 print(glyph.name, end = ", ")
-                
+
         # f.update()
         print()
-        
+
     def checkComponentsAndOutlines(self, f):
         self.progress.setTickCount(len(f))
         print()
@@ -120,8 +120,8 @@ class markingTool(BaseWindowController):
                 glyph.markColor = 1, 0, 0.5, 0.35
                 # glyph.performUndo()
                 print(glyph.name, end = ", ")
-                
-        # f.update()  
+
+        # f.update()
         print()
 
     def groupComponents(self, f):
@@ -131,9 +131,9 @@ class markingTool(BaseWindowController):
         componentsGroup.query = 'Contours == 0 and Components > 0'
         addSmartSet(componentsGroup)
         updateAllSmartSets()
-        
+
     def groupComponentsAndOutlines(self, f):
-        
+
         self.progress.setTickCount(len(f))
         contoursAndComponentsGroup = SmartSet()
         contoursAndComponentsGroup.name = 'components and outlines'
@@ -141,25 +141,19 @@ class markingTool(BaseWindowController):
         addSmartSet(contoursAndComponentsGroup)
         updateAllSmartSets()
 
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-f = CurrentFont()        
-markingTool()      
-        
-        
-        
-        
-            
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+f = CurrentFont()
+markingTool()
