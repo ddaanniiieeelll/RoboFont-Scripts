@@ -1,4 +1,5 @@
 from vanilla import *
+from mojo.UI import *
 from defconAppKit.windows.baseWindow import BaseWindowController
 
 
@@ -12,7 +13,8 @@ class markingTool(BaseWindowController):
         self.w.checkBoxComponentsAndOutlines = CheckBox((10,70,-10,20), 'Components and Outlines', callback=self.checkBoxComponentsAndOutlinesCallback)
         # self.w.checkBoxUsedAsComponents = CheckBox((10,100,-10,20), 'Used as components')
         
-        self.w.buttonCheck = Button((10, -30, 190, 15), 'Mark', sizeStyle = 'small', callback=self.showProgress)
+        self.w.buttonCheck = Button((10, -30, 90, 15), 'Mark', sizeStyle = 'small', callback=self.showProgress)
+        self.w.buttonGroup = Button((110, -30, 90, 15), 'Group', sizeStyle = 'small', callback=self.showProgressGroups)
         self.w.buttonClose = Button((210, -30, 90, 15), 'Close', sizeStyle = 'small', callback=self.closeWindow)
         
         self.w.open()
@@ -58,7 +60,19 @@ class markingTool(BaseWindowController):
         #     # self.checkUsedAsComponents(f)
         #     self.progress.close()
         
-        self.w.close()
+    def showProgressGroups(self, sender):
+        if self.w.checkBoxComponents.get():
+            self.progress = self.startProgress('looking for components')
+            self.groupComponents(f)
+            self.progress.close()
+            
+        if self.w.checkBoxComponentsAndOutlines.get():
+            self.progress =self.startProgress('looking for glyphs with components and outlines')
+            self.groupComponentsAndOutlines(f)
+            self.progress.close()
+        
+        
+        # self.w.close()
         
     def checkOverlaps(self, f):
         self.progress.setTickCount(len(f))
@@ -75,7 +89,7 @@ class markingTool(BaseWindowController):
                 # glyph.performUndo()
                 print(glyph.name, end = ", ")
                 
-        f.update()
+        # f.update()
         print()
         
     def checkComponents(self, f):
@@ -91,7 +105,7 @@ class markingTool(BaseWindowController):
                 # glyph.performUndo()
                 print(glyph.name, end = ", ")
                 
-        f.update()
+        # f.update()
         print()
         
     def checkComponentsAndOutlines(self, f):
@@ -107,9 +121,25 @@ class markingTool(BaseWindowController):
                 # glyph.performUndo()
                 print(glyph.name, end = ", ")
                 
-        f.update()  
+        # f.update()  
         print()
 
+    def groupComponents(self, f):
+        self.progress.setTickCount(len(f))
+        componentsGroup = SmartSet()
+        componentsGroup.name = 'components'
+        componentsGroup.query = 'Contours == 0 and Components > 0'
+        addSmartSet(componentsGroup)
+        updateAllSmartSets()
+        
+    def groupComponentsAndOutlines(self, f):
+        
+        self.progress.setTickCount(len(f))
+        contoursAndComponentsGroup = SmartSet()
+        contoursAndComponentsGroup.name = 'components and outlines'
+        contoursAndComponentsGroup.query = 'Contours > 0 and Components >0'
+        addSmartSet(contoursAndComponentsGroup)
+        updateAllSmartSets()
 
         
         
