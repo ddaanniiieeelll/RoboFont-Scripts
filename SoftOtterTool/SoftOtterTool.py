@@ -10,314 +10,317 @@ from defconAppKit.windows.baseWindow import BaseWindowController
 
 ########## markingTool
 
-class markingTool(object):
+class markingTool(BaseWindowController):
+
     def __init__(self):
-        # The Tool Window
-        self.w = FloatingWindow((1800, 300, 200, 195), 'Marking Tool')
-        self.w.buttonMark = Button((10, 10, -10, 20), '\u2190 mark', callback=self.toggleMarkDrawer)
-        self.w.buttonGroup = Button((10, 40, -10, 20), 'make group \u2192', callback=self.toggleGroupDrawer)
-        # mark drawer
-        self.d = Drawer((180, 120), self.w, preferredEdge = 'left')
-        self.d.componentsAndOutlinesButton = Button((10, 10, -10, 20), 'comp. + outlines', callback=self.componentsAndOutlinesCallback)
-        self.d.componentsButton = Button((10,40,-10,20), 'components', callback=self.componentsCallback)
-        self.d.usedAsComponentButton = Button((10,70,-10,20), 'used as components', callback=self.usedAsComponentCallback)
-        self.d.markOverlapButton = Button((10,100,-10,20), 'overlaps', callback=self.markOverlapCallback)
-        # group drawer
-        self.g = Drawer((180, 120), self.w, preferredEdge = 'right')
-        self.g.componentsAndOutlinesGroupButton = Button((10, 10, -10, 20), 'comp. + outlines', callback=self.componentsAndOutlinesGroupCallback)
-        self.g.componentsGroupButton = Button((10, 40, -10, 20), 'components', callback=self.componentsGroupCallback)
-        # self.g.usedAsComponentsGroupButton = Button((10,70,-10,20), 'used as components', callback=self.usedAsComponentsGroupCallback)
+        self.w = FloatingWindow((1800, 550, 310, 170), 'Marking Tool')
+
+        self.w.checkBoxOverlaps = CheckBox((10,10,-10,20), 'Overlaps', callback=self.checkBoxOverlapsCallback)
+        self.w.checkBoxComponents = CheckBox((10,40,-10,20), 'Components', callback=self.checkBoxComponentsCallback)
+        self.w.checkBoxComponentsAndOutlines = CheckBox((10,70,-10,20), 'Components and Outlines', callback=self.checkBoxComponentsAndOutlinesCallback)
+        # self.w.checkBoxUsedAsComponents = CheckBox((10,100,-10,20), 'Used as components')
+
+        self.w.buttonCheck = Button((10, -30, 90, 15), 'Mark', sizeStyle = 'small', callback=self.checks)
+        self.w.buttonGroup = Button((110, -30, 90, 15), 'Group', sizeStyle = 'small', callback=self.groups)
+        self.w.buttonClose = Button((210, -30, 90, 15), 'Close', sizeStyle = 'small', callback=self.closeWindow)
 
         self.w.open()
-        # self.d.open()
+
+
+    def closeWindow(self, sender):
+        self.w.close()
 
 
 
-##### Callbacks
-    # open mark drawer
-    def toggleMarkDrawer(self, sender):
-        self.d.toggle()
-    # open group drawer
-    def toggleGroupDrawer(self, sender):
-        self.g.toggle()
-    ##### mark Callbacks
-    def componentsAndOutlinesCallback(self, sender):
-        font = CurrentFont()
-        # glyph = CurrentGlyph()
-        print('>>> Glyphs combining components and outlines:')
-        print('---------------------------------------------')
-        for glyph in font:
-            if len(glyph.contours) > 0 and len(glyph.components) > 0:
-                glyph.prepareUndo('mark components and outlines')
-                glyph.markColor = 1, 0, 0.5, 0.35
-                glyph.performUndo()
-                print(glyph.name, end = " ")
-        print('\n')
+    def checkBoxOverlapsCallback(self, sender):
+        sender.get()
+
+    def checkBoxComponentsCallback(self, sender):
+        sender.get()
+
+    def checkBoxComponentsAndOutlinesCallback(self, sender):
+        sender.get()
+
+    # def checkBoxUsedAsComponentsCallback(self, sender):
+    #     sender.get()
 
 
-    def componentsCallback(self,sender):
-        font = CurrentFont()
-        # glyph = CurrentGlyph()
-        print('>>> Glyphs completely made out of components:')
-        print('---------------------------------------------')
-        for glyph in font:
-            if len(glyph.contours) == 0 and len(glyph.components) > 0:
-                glyph.prepareUndo('mark components')
-                glyph.markColor = 0, 0.25, 0.5, 0.35
-                glyph.performUndo()
-                print(glyph.name, end = " ")
-        print('\n')
 
-    def usedAsComponentCallback(self, sender):
-        font = CurrentFont()
-        glyph = CurrentGlyph()
+    def checks(self, sender):
+        if self.w.checkBoxOverlaps.get():
+            self.progress = self.startProgress('looking for overlaps')
+            self.checkOverlaps(f)
+            self.progress.close()
 
-        print('>>> These glyphs are used as components')
-        print('---------------------------------------')
-        for component in glyph.components:
-            baseGlyph = font[component.baseGlyph]
-            print(component.baseGlyph)
-            baseGlyph.prepareUndo('marks glyphs used as components')
-            baseGlyph.markColor = 0.5, 0, 1, 0.35
-            baseGlyph.performUndo()
-        print('\n')
+        if self.w.checkBoxComponents.get():
+            self.progress = self.startProgress('looking for components')
+            self.checkComponents(f)
+            self.progress.close()
 
-    def markOverlapCallback(self, sender):
-        font = CurrentFont()
-        # glyph = CurrentGlyph()
+        if self.w.checkBoxComponentsAndOutlines.get():
+            self.progress =self.startProgress('looking for glyphs with components and outlines')
+            self.checkComponentsAndOutlines(f)
+            self.progress.close()
 
+        # if self.w.checkBoxUsedAsComponents.get():
+        #     self.progress = self.startProgress('looking where outline is used as component')
+        #     # self.checkUsedAsComponents(f)
+        #     self.progress.close()
+
+    def groups(self, sender):
+        if self.w.checkBoxComponents.get():
+            self.progress = self.startProgress('looking for components')
+            self.groupComponents(f)
+            self.progress.close()
+
+        if self.w.checkBoxComponentsAndOutlines.get():
+            self.progress =self.startProgress('looking for glyphs with components and outlines')
+            self.groupComponentsAndOutlines(f)
+            self.progress.close()
+
+
+        # self.w.close()
+
+    def checkOverlaps(self, f):
+        self.progress.setTickCount(len(f))
+        print()
         print('>>> Glyphs with overlaps')
         print('------------------------')
-        for glyph in font:
+        for glyph in f:
+            self.progress.update()
             compareGlyph = glyph.copy()
             compareGlyph.removeOverlap()
             if len(glyph) != len(compareGlyph) or glyph.hasOverlap():
-                print(glyph.name, end = " ")
-                glyph.prepareUndo('mark overlaps')
+                # glyph.prepareUndo('mark overlaps')
                 glyph.markColor = 0.5, 0, 0.2, 0.75
-                glyph.performUndo()
-        print('\n')
+                # glyph.performUndo()
+                print(glyph.name, end = ", ")
 
-    ##### group Callbacks
-    def componentsAndOutlinesGroupCallback(self, sender):
-        contoursAndComponentsGroup = SmartSet()
-        contoursAndComponentsGroup.name = 'components and outlines'
-        contoursAndComponentsGroup.query = 'Contours > 0 and Components >0'
-        addSmartSet(contoursAndComponentsGroup)
-        updateAllSmartSets()
+        # f.update()
+        print()
 
-    def componentsGroupCallback(self, sender):
+    def checkComponents(self, f):
+        self.progress.setTickCount(len(f))
+        print()
+        print('>>> Glyphs completely made out of components:')
+        print('---------------------------------------------')
+        for glyph in f:
+            self.progress.update()
+            if len(glyph.contours) == 0 and len(glyph.components) > 0:
+                # glyph.prepareUndo('mark components')
+                glyph.markColor = 0, 0.25, 0.5, 0.35
+                # glyph.performUndo()
+                print(glyph.name, end = ", ")
+
+        # f.update()
+        print()
+
+    def checkComponentsAndOutlines(self, f):
+        self.progress.setTickCount(len(f))
+        print()
+        print('>>> Glyphs combining components and outlines:')
+        print('---------------------------------------------')
+        for glyph in f:
+            self.progress.update()
+            if len(glyph.contours) > 0 and len(glyph.components) > 0:
+                # glyph.prepareUndo('mark components and outlines')
+                glyph.markColor = 1, 0, 0.5, 0.35
+                # glyph.performUndo()
+                print(glyph.name, end = ", ")
+
+        # f.update()
+        print()
+
+    def groupComponents(self, f):
+        self.progress.setTickCount(len(f))
         componentsGroup = SmartSet()
         componentsGroup.name = 'components'
         componentsGroup.query = 'Contours == 0 and Components > 0'
         addSmartSet(componentsGroup)
         updateAllSmartSets()
 
-    # def usedAsComponentsGroupCallback(self, sender):
-    #     usedAsComponentsGroup = SmartSet()
-    #     usedAsComponentsGroup.name = 'used as components'
-    #     usedAsComponentsGroup.query = 'Color = 0.5, 0, 1, 0.35'
-    #     addSmartSet(usedAsComponentsGroup)
-    #     updateAllSmartSets()
+    def groupComponentsAndOutlines(self, f):
+
+        self.progress.setTickCount(len(f))
+        contoursAndComponentsGroup = SmartSet()
+        contoursAndComponentsGroup.name = 'components and outlines'
+        contoursAndComponentsGroup.query = 'Contours > 0 and Components >0'
+        addSmartSet(contoursAndComponentsGroup)
+        updateAllSmartSets()
+
+
+f = CurrentFont()
+# markingTool()
+
 
 ########## outlineTool
 
 ##### remove overlaps
 
-class removeOverlaps(object):
+class outlineTool(BaseWindowController):
 
-    def __init__(self, parentWindow):
-        # The Tool Window
-        self.w = Sheet((250, 100), parentWindow)
-        self.w.removeButton = Button((10, 10, -10, 20), "remove overlap in current glyph", callback=self.removeCurrentButton)
-        self.w.removeAllButton = Button((10, 40, -10, 20), "remove overlap in all glyphs", callback=self.removeAllButton)
-        self.w.myTextBox = TextBox((10, 70, -10, 17), "removing the overlaps")
-        self.w.closeButton = Button((-90, -30, 80, 22), "close", self.closeCallback)
+    def __init__(self):
+        self.w = FloatingWindow((1800, 500, 310, 170), 'Outline Tool')
+
+        self.w.checkBoxOverlaps = CheckBox((10, 10, -10, 20), 'Remove overlaps', callback=self.checkBoxOverlapsCallback)
+        self.w.checkBoxPS = CheckBox((10, 40, -10, 20), 'Set PS direction', callback=self.checkBoxPSCallback)
+        self.w.checkBoxTT = CheckBox((10, 70, -10, 20), 'Set TT direction', callback=self.checkBoxTTCallback)
+
+        self.w.buttonCurrent = Button((10, -30, 90, 15), 'Current glyph', sizeStyle = 'small', callback=self.currentCallback)
+        self.w.buttonAll = Button((110, -30, 90, 15), 'All glyphs', sizeStyle = 'small', callback=self.allCallback)
+        self.w.buttonClose = Button((210, -30, 90, 15), 'Close', sizeStyle = 'small', callback=self.closeWindow)
+
+
+
         self.w.open()
 
 
-##### Callbacks to remove Overlaps
-
-    def removeCurrentButton(self, sender):
-
-        font = CurrentFont()
-        glyph = CurrentGlyph()
-
-        # if glyph.hasOverlap():
-        glyph.prepareUndo('remove overlap in current glyph')
-        glyph.removeOverlap()
-        glyph.markColor = None
-        glyph.performUndo()
-        print('>>> Removed overlap in:', glyph.name)
+    def closeWindow(self, sender):
         self.w.close()
+
+    def checkBoxOverlapsCallback(self, sender):
+        sender.get()
+
+    def checkBoxPSCallback(self, sender):
+        sender.get()
+
+    def checkBoxTTCallback(self, sender):
+        sender.get()
+
+
+
+
+    def currentCallback(self, sender):
+        if self.w.checkBoxOverlaps.get():
+            self.progress = self.startProgress('removing overlaps')
+            self.removeCurrentOverlaps(f)
+            self.progress.close()
+
+        if self.w.checkBoxPS.get():
+            self.progress = self.startProgress('setting PS direction')
+            self.setCurrentPS(f)
+            self.progress.close()
+
+        if self.w.checkBoxTT.get():
+            self.progress = self.startProgress('setting TT direction')
+            self.setCurrentTT(f)
+            self.progress.close()
+
+
+    def allCallback(self, sender):
+        if self.w.checkBoxOverlaps.get():
+            self.progress = self.startProgress('removing overlaps')
+            self.removeAllOverlaps(f)
+            self.progress.close()
+
+        if self.w.checkBoxPS.get():
+            self.progress = self.startProgress('setting PS direction')
+            self.setAllPS(f)
+            self.progress.close()
+
+        if self.w.checkBoxTT.get():
+            self.progress = self.startProgress('setting TT direction')
+            self.setAllTT(f)
+            self.progress.close()
+
+
+
+
+
+
+    def removeCurrentOverlaps(self, f):
+        self.progress.setTickCount(len(f))
+        print()
+        print('>>> Removed overlap in')
+        print('------------------------')
+        self.progress.update()
+        glyph = CurrentGlyph()
+        compareGlyph = glyph.copy()
+        compareGlyph.removeOverlap()
+        if len(glyph) != len(compareGlyph) or glyph.hasOverlap():
+            glyph.removeOverlap()
+            print(glyph.name, end=', ')
+
+        # f.update()
         print()
 
-    def removeAllButton(self,sender):
-        font = CurrentFont()
-        # glyph = CurrentGlyph()
-
-        print('>>> Removed overlap in:')
-        print('-----------------------')
-        for glyph in font:
-            compareGlyph = glyph.copy()
-            compareGlyph.removeOverlap()
-            if glyph.hasOverlap() or len(glyph) != len(compareGlyph):
-                glyph.prepareUndo('remove overlap in current glyph')
-                glyph.removeOverlap()
-                glyph.markColor = None
-                glyph.performUndo()
-                print(glyph.name, end = ' ')
-        print('\n')
-        self.w.close()
-
-
-
-
-
-    def closeCallback(self, sender):
-        self.w.close()
-
-##### set the direction
-
-
-class setDirection(object):
-
-    def __init__(self, parentWindow):
-        self.w = Sheet((250, 185), parentWindow)
-        self.w.setPSButton = Button((10, 10, -10, 20), 'set PS direction in current glyph', callback=self.setPSButton)
-        self.w.setAllPSButton = Button((10, 40, -10, 20), 'set PS direction in all glyphs', callback=self.setAllPSButton)
-        self.w.setTTButton = Button((10,70,-10, 20), 'set TT direction in current glyph', callback=self.setTTButton)
-        self.w.setAllTTButton = Button((10, 100, -10, 17), 'set TT direction in all glyphs', callback=self.setAllTTButton)
-        self.w.myTextBox = TextBox((10, 130, -10, 17), 'changing the paths direction')
-        self.w.closeButton = Button((-90, -30, 80, 22), 'close', self.closeCallback)
-        self.w.open()
-
-##### Callbacks to set the direction
-
-    def setPSButton(self, sender):
-
-        font = CurrentFont()
+    def setCurrentPS(self, f):
+        self.progress.setTickCount(len(f))
+        print()
+        print('>>> Set PS direction in')
+        print('------------------------')
+        self.progress.update()
         glyph = CurrentGlyph()
-
-
         for contour in glyph.contours:
             glyph.correctDirection(trueType=False)
-        print('>>> Corrected the direction of _%s_ following the PostScript recommendations' % glyph.name)
-        glyph.changed()
+        print(glyph.name, end=', ')
+
+        # f.update()
         print()
-        self.w.close()
 
-    def setAllPSButton(self,sender):
-        font = CurrentFont()
-        glyph = CurrentGlyph()
-
-        print('>>> All outlines set to PS')
-        for glyph in font:
-            for contour in glyph.contours:
-                glyph.correctDirection(trueType=False)
-            glyph.changed()
-
+    def setCurrentTT(self, f):
+        self.progress.setTickCount(len(f))
         print()
-        self.w.close()
-
-    def setTTButton(self, sender):
-        font = CurrentFont()
+        print('>>> Set TT direction in')
+        print('------------------------')
+        self.progress.update()
         glyph = CurrentGlyph()
-
         for contour in glyph.contours:
             glyph.correctDirection(trueType=True)
-        print('>>> Corrected the direction of _%s_ following the TrueType recommendations' % glyph.name)
-        glyph.changed()
+        print(glyph.name, end=', ')
+
+        # f.update()
         print()
-        self.w.close()
 
-    def setAllTTButton(self,sender):
-        font = CurrentFont()
-        glyph = CurrentGlyph()
 
-        print('>>> All outlines set to TT')
-        for glyph in font:
+    def removeAllOverlaps(self, f):
+        self.progress.setTickCount(len(f))
+        print()
+        print('>>> Removed overlap in')
+        print('------------------------')
+        for glyph in f:
+            self.progress.update()
+            compareGlyph = glyph.copy()
+            compareGlyph.removeOverlap()
+            if len(glyph) != len(compareGlyph) or glyph.hasOverlap():
+                glyph.removeOverlap()
+                print(glyph.name, end=', ')
+
+        # f.update()
+        print()
+
+    def setAllPS(self, f):
+        self.progress.setTickCount(len(f))
+        print()
+        print('>>> Set PS direction in')
+        print('------------------------')
+        for glyph in f:
+            self.progress.update()
+            for contour in glyph.contours:
+                glyph.correctDirection(trueType=False)
+            print(glyph.name, end=', ')
+
+        # f.update()
+        print()
+
+    def setAllTT(self, f):
+        self.progress.setTickCount(len(f))
+        print()
+        print('>>> Set TT direction in')
+        print('------------------------')
+        for glyph in f:
+            self.progress.update()
             for contour in glyph.contours:
                 glyph.correctDirection(trueType=True)
-            glyph.changed()
+            print(glyph.name, end=', ')
 
+        # f.update()
         print()
-        self.w.close()
 
 
 
-    def closeCallback(self, sender):
-        self.w.close()
-
-
-
-
-
-class outlineTool(object):
-
-    def __init__(self):
-        # The Tool Window
-        self.w = FloatingWindow((1800, 550, 250, 75), title='Outline Tool')
-        self.w.overlaps = Button((10, 10, -10, 22), "remove overlaps", callback=self.removeOverlapsCallback)
-        self.w.direction = Button((10, 40, -10, 22), 'direction', callback=self.setDirectionCallback)
-        self.w.open()
-    # open the remove overlaps sheet
-    def removeOverlapsCallback(self, sender):
-        removeOverlaps(self.w)
-    # open the set direction sheet
-    def setDirectionCallback(self, sender):
-         setDirection(self.w)
-
-########## highlightTool
-
-class highlightPointsOnMetrics(BaseWindowController):
-
-    def __init__(self):
-        self.w = FloatingWindow((1800, 680, 135, 60), "Highlight Tool", minSize=(123, 200))
-
-        # a checkbox to turn the tool on/off
-        self.w.showPoints = CheckBox((10, 10, -10, 50), 'highlight points\n on metric line', value=False)
-
-        # add an observer to the drawPreview event
-        addObserver(self, "highlightPoints", "draw")
-
-        # open window
-        self.setUpBaseWindowBehavior()
-        self.w.open()
-
-    def windowCloseCallback(self, sender):
-        # remove observer when window is closed
-        removeObserver(self, 'draw')
-        super(highlightPointsOnMetrics, self).windowCloseCallback(sender)
-
-    def highlightPoints(self, info):
-        # check if checkbox is selected
-        if not self.w.showPoints.get():
-            return
-        f = CurrentFont()
-        # get the current glyph
-        glyph = info["glyph"]
-        sc = info['scale']
-
-        asc = f.info.ascender
-        xhe = f.info.xHeight
-        cap = f.info.capHeight
-        dsc = f.info.descender
-        size = 8 * sc
-        # draw highlight
-        stroke(None)
-        if glyph is not None:
-            for c in glyph:
-                for s in c:
-                    for p in s:
-                        if p.y == asc or p.y == xhe or p.y == cap or p.y == dsc or p.y == 0:
-
-                            # fill(1, 0, 0, .6)
-
-                            fill(None)
-                            stroke(0, 0.8, 0.8, .8)
-                            strokeWidth(3 * sc)
-                            rect(p.x-size/2, p.y-size/2, size, size)
+f = CurrentFont()
+# outlineTool()
 
 
 ########## SoftOtterTool in Inspector
@@ -331,11 +334,11 @@ class SoftOtterTools(object):
         self.editor = Group((0, 0, -0, -0))
         self.editor.markingToolButton = Button((10,10,-10,20), 'Marking Tool', callback=self.markingToolCallback)
         self.editor.outlineToolButton = Button((10,40,-10,20), 'Outline Tool', callback=self.outlineToolCallback)
-        self.editor.highlightToolButton = Button((10, 70, -10, 20), 'Highlight Tool', callback=self.highlightToolCallback)
+        # self.editor.highlightToolButton = Button((10, 70, -10, 20), 'Highlight Tool', callback=self.highlightToolCallback)
 
     def inspectorWindowWillShowDescriptions(self, notification):
         # create an inspector item
-        item = dict(label="Soft Otter Tool", view=self.editor)
+        item = dict(label="Soft Otter Tool TEST", view=self.editor)
         # insert or append the item to the list of inspector panes
         notification["descriptions"].insert(1, item)
 
@@ -345,8 +348,8 @@ class SoftOtterTools(object):
     def outlineToolCallback(self, sender):
         outlineTool()
 
-    def highlightToolCallback(self, sender):
-        highlightPointsOnMetrics()
+    # def highlightToolCallback(self, sender):
+    #     highlightPointsOnMetrics()
 
 
 SoftOtterTools()
