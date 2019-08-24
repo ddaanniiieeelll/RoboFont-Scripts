@@ -1,5 +1,5 @@
-# RoboPython
-Python Scripts for Robofont
+# Development branch for RoboFont scripts
+
 
 ## saveCopy
 Creates a new .ufo in the same directory with the current date and time in the name.
@@ -47,4 +47,4 @@ Additionally the markingTool now has an option to create Smart Sets that include
 ## highlightPointsAtMetricLine
 
 Turning this on shows a red rectangle around those points that are exactly at the metric lines (ascender, descender, xHeight and baseline).  
-Sadly they don't scale correctly until now 
+Sadly they don't scale correctly until now
