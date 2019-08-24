@@ -1,148 +1,169 @@
 from vanilla import *
-from mojo.UI import ProgressBar
-
-class removeOverlaps(object):
-
-    def __init__(self, parentWindow):
-        self.w = Sheet((250, 100), parentWindow)
-        self.w.removeButton = Button((10, 10, -10, 20), "remove overlap in current glyph", callback=self.removeCurrentButton)
-        self.w.removeAllButton = Button((10, 40, -10, 20), "remove overlap in all glyphs", callback=self.removeAllButton)
-        self.w.myTextBox = TextBox((10, 70, -10, 17), "removing the overlaps")
-        self.w.closeButton = Button((-90, -30, 80, 22), "close", self.closeCallback)
-        self.w.open()
-        
-        
-## Callbacks
-
-    def removeCurrentButton(self, sender):
-        
-        font = CurrentFont()
-        glyph = CurrentGlyph()
-
-        # if glyph.hasOverlap():
-        glyph.prepareUndo('remove overlap in current glyph')
-        glyph.removeOverlap()
-        glyph.markColor = None
-        glyph.performUndo()
-        print('>>> Removed overlap in:', glyph.name)
-        self.w.close()
-        print()
-        
-    def removeAllButton(self,sender):
-        font = CurrentFont()
-        # glyph = CurrentGlyph()
-    
-        print('>>> Removed overlap in:')
-        print('-----------------------')
-        for glyph in font:
-            compareGlyph = glyph.copy()
-            compareGlyph.removeOverlap()
-            if glyph.hasOverlap() or len(glyph) != len(compareGlyph):
-                glyph.prepareUndo('remove overlap in current glyph')
-                glyph.removeOverlap()
-                glyph.markColor = None
-                glyph.performUndo()
-                print(glyph.name, end = ' ')
-        print('\n')
-        self.w.close()
-
-        
+from mojo.UI import *
+from defconAppKit.windows.baseWindow import BaseWindowController
 
 
-
-    def closeCallback(self, sender):
-        self.w.close()
-
-##############
-
-
-class setDirection(object):
-
-    def __init__(self, parentWindow):
-        self.w = Sheet((250, 185), parentWindow) 
-        self.w.setPSButton = Button((10, 10, -10, 20), 'set PS direction in current glyph', callback=self.setPSButton)
-        self.w.setAllPSButton = Button((10, 40, -10, 20), 'set PS direction in all glyphs', callback=self.setAllPSButton)
-        self.w.setTTButton = Button((10,70,-10, 20), 'set TT direction in current glyph', callback=self.setTTButton)
-        self.w.setAllTTButton = Button((10, 100, -10, 17), 'set TT direction in all glyphs', callback=self.setAllTTButton)
-        self.w.myTextBox = TextBox((10, 130, -10, 17), 'changing the paths direction')
-        self.w.closeButton = Button((-90, -30, 80, 22), 'close', self.closeCallback)
-        self.w.open()
-        
-        
-## Callbacks
-
-    def setPSButton(self, sender):
-        
-        font = CurrentFont()
-        glyph = CurrentGlyph()
-
-
-        for contour in glyph.contours:
-            glyph.correctDirection(trueType=False)
-        print('>>> Corrected the direction of _%s_ following the PostScript recommendations' % glyph.name)
-        glyph.changed()
-        print()
-        self.w.close()
-        
-    def setAllPSButton(self,sender):
-        font = CurrentFont()
-        glyph = CurrentGlyph()
-        
-        print('>>> All outlines set to PS')
-        for glyph in font:
-            for contour in glyph.contours:
-                glyph.correctDirection(trueType=False)
-            glyph.changed()
-        
-        print()
-        self.w.close()
-        
-    def setTTButton(self, sender):
-        font = CurrentFont()
-        glyph = CurrentGlyph()
-        
-        for contour in glyph.contours:
-            glyph.correctDirection(trueType=True)
-        print('>>> Corrected the direction of _%s_ following the TrueType recommendations' % glyph.name)
-        glyph.changed()
-        print()
-        self.w.close()
-
-    def setAllTTButton(self,sender):
-        font = CurrentFont()
-        glyph = CurrentGlyph()
-        
-        print('>>> All outlines set to TT')
-        for glyph in font:
-            for contour in glyph.contours:
-                glyph.correctDirection(trueType=True)
-            glyph.changed()
-        
-        print()
-        self.w.close()
-
-
-
-    def closeCallback(self, sender):
-        self.w.close()
-
-
-
-
-
-class outlineTool(object):
+class outlineTool(BaseWindowController):
 
     def __init__(self):
+        self.w = FloatingWindow((1800, 500, 310, 170), 'Outline Tool')
 
-        self.w = FloatingWindow((1800, 550, 250, 75), title='Outline Tool')
-        self.w.overlaps = Button((10, 10, -10, 22), "remove overlaps", callback=self.removeOverlapsCallback)
-        self.w.direction = Button((10, 40, -10, 22), 'direction', callback=self.setDirectionCallback)
+        self.w.checkBoxOverlaps = CheckBox((10, 10, -10, 20), 'Remove overlaps', callback=self.checkBoxOverlapsCallback)
+        self.w.checkBoxPS = CheckBox((10, 40, -10, 20), 'Set PS direction', callback=self.checkBoxPSCallback)
+        self.w.checkBoxTT = CheckBox((10, 70, -10, 20), 'Set TT direction', callback=self.checkBoxTTCallback)
+
+        self.w.buttonCurrent = Button((10, -30, 90, 15), 'Current glyph', sizeStyle = 'small', callback=self.currentCallback)
+        self.w.buttonAll = Button((110, -30, 90, 15), 'All glyphs', sizeStyle = 'small', callback=self.allCallback)
+        self.w.buttonClose = Button((210, -30, 90, 15), 'Close', sizeStyle = 'small', callback=self.closeWindow)
+
+
+
         self.w.open()
 
-    def removeOverlapsCallback(self, sender):
-        removeOverlaps(self.w) 
-        
-    def setDirectionCallback(self, sender):
-         setDirection(self.w)
 
+    def closeWindow(self, sender):
+        self.w.close()
+
+    def checkBoxOverlapsCallback(self, sender):
+        sender.get()
+
+    def checkBoxPSCallback(self, sender):
+        sender.get()
+
+    def checkBoxTTCallback(self, sender):
+        sender.get()
+
+
+
+
+    def currentCallback(self, sender):
+        if self.w.checkBoxOverlaps.get():
+            self.progress = self.startProgress('removing overlaps')
+            self.removeCurrentOverlaps(f)
+            self.progress.close()
+
+        if self.w.checkBoxPS.get():
+            self.progress = self.startProgress('setting PS direction')
+            self.setCurrentPS(f)
+            self.progress.close()
+
+        if self.w.checkBoxTT.get():
+            self.progress = self.startProgress('setting TT direction')
+            self.setCurrentTT(f)
+            self.progress.close()
+
+
+    def allCallback(self, sender):
+        if self.w.checkBoxOverlaps.get():
+            self.progress = self.startProgress('removing overlaps')
+            self.removeAllOverlaps(f)
+            self.progress.close()
+
+        if self.w.checkBoxPS.get():
+            self.progress = self.startProgress('setting PS direction')
+            self.setAllPS(f)
+            self.progress.close()
+
+        if self.w.checkBoxTT.get():
+            self.progress = self.startProgress('setting TT direction')
+            self.setAllTT(f)
+            self.progress.close()
+
+
+
+
+
+
+    def removeCurrentOverlaps(self, f):
+        self.progress.setTickCount(len(f))
+        print()
+        print('>>> Removed overlap in')
+        print('------------------------')
+        self.progress.update()
+        glyph = CurrentGlyph()
+        compareGlyph = glyph.copy()
+        compareGlyph.removeOverlap()
+        if len(glyph) != len(compareGlyph) or glyph.hasOverlap():
+            glyph.removeOverlap()
+            print(glyph.name, end=', ')
+
+        # f.update()
+        print()
+
+    def setCurrentPS(self, f):
+        self.progress.setTickCount(len(f))
+        print()
+        print('>>> Set PS direction in')
+        print('------------------------')
+        self.progress.update()
+        glyph = CurrentGlyph()
+        for contour in glyph.contours:
+            glyph.correctDirection(trueType=False)
+        print(glyph.name, end=', ')
+
+        # f.update()
+        print()
+
+    def setCurrentTT(self, f):
+        self.progress.setTickCount(len(f))
+        print()
+        print('>>> Set TT direction in')
+        print('------------------------')
+        self.progress.update()
+        glyph = CurrentGlyph()
+        for contour in glyph.contours:
+            glyph.correctDirection(trueType=True)
+        print(glyph.name, end=', ')
+
+        # f.update()
+        print()
+
+
+    def removeAllOverlaps(self, f):
+        self.progress.setTickCount(len(f))
+        print()
+        print('>>> Removed overlap in')
+        print('------------------------')
+        for glyph in f:
+            self.progress.update()
+            compareGlyph = glyph.copy()
+            compareGlyph.removeOverlap()
+            if len(glyph) != len(compareGlyph) or glyph.hasOverlap():
+                glyph.removeOverlap()
+                print(glyph.name, end=', ')
+
+        # f.update()
+        print()
+
+    def setAllPS(self, f):
+        self.progress.setTickCount(len(f))
+        print()
+        print('>>> Set PS direction in')
+        print('------------------------')
+        for glyph in f:
+            self.progress.update()
+            for contour in glyph.contours:
+                glyph.correctDirection(trueType=False)
+            print(glyph.name, end=', ')
+
+        # f.update()
+        print()
+
+    def setAllTT(self, f):
+        self.progress.setTickCount(len(f))
+        print()
+        print('>>> Set TT direction in')
+        print('------------------------')
+        for glyph in f:
+            self.progress.update()
+            for contour in glyph.contours:
+                glyph.correctDirection(trueType=True)
+            print(glyph.name, end=', ')
+
+        # f.update()
+        print()
+
+
+
+f = CurrentFont()
 outlineTool()
