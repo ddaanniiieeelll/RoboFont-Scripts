@@ -80,6 +80,7 @@ class outlineTool(BaseWindowController):
         print('>>> Removed overlap in')
         print('------------------------')
         self.progress.update()
+        glyph = CurrentGlyph()
         compareGlyph = glyph.copy()
         compareGlyph.removeOverlap()
         if len(glyph) != len(compareGlyph) or glyph.hasOverlap():
@@ -95,6 +96,7 @@ class outlineTool(BaseWindowController):
         print('>>> Set PS direction in')
         print('------------------------')
         self.progress.update()
+        glyph = CurrentGlyph()
         for contour in glyph.contours:
             glyph.correctDirection(trueType=False)
         print(glyph.name, end=', ')
@@ -108,6 +110,7 @@ class outlineTool(BaseWindowController):
         print('>>> Set TT direction in')
         print('------------------------')
         self.progress.update()
+        glyph = CurrentGlyph()
         for contour in glyph.contours:
             glyph.correctDirection(trueType=True)
         print(glyph.name, end=', ')
