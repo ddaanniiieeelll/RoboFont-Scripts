@@ -6,6 +6,10 @@
 from vanilla import FloatingWindow, Button, List
 from mojo.roboFont import FontsList
 from mojo.events import addObserver, removeObserver
+from mojo.extensions import getExtensionDefault, setExtensionDefault
+
+key = 'test'
+
 
 class fontWindow(object):
 
@@ -19,19 +23,19 @@ class fontWindow(object):
 
 
         padding = 10
-        buttonHeight = 20
-        columnFonts = 230
-        columnGlyphs = 130
+        # buttonHeight = 20
+        # columnFonts = 230
+        # columnGlyphs = 130
         listHeight = 240
-        width = 280 + padding*3
-        height = 240 + buttonHeight*2 + padding*4
+        width = 310
+        height = 320
 
         addObserver(self, 'updateWindow', 'fontWillOpen')
         addObserver(self, 'updateWindow', 'fontDidClose')
 
 
 
-        self.w = FloatingWindow((width, height), 'FontWindow')
+        self.w = FloatingWindow((width, height), 'FontWindow', autosaveName=key)
 
         x = y = padding
         # y += padding
