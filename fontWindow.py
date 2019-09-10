@@ -1,14 +1,13 @@
-## Add observers so the list in the FontWindow
-## gets updates when a font is opened/closed
-
-
+# menuTitle: Font Window
+# shortCut : command + control + w
 
 from vanilla import FloatingWindow, Button, List
 from mojo.roboFont import FontsList
 from mojo.events import addObserver, removeObserver
-from mojo.extensions import getExtensionDefault, setExtensionDefault
+from mojo.UI import AskYesNoCancel
 
-key = 'test'
+
+key = 'windowposition'
 
 
 class fontWindow(object):
@@ -19,13 +18,8 @@ class fontWindow(object):
         fontsList.sortBy('openTypeOS2WeightClass')
         self.fontList = fontsList
 
-        # addObserver(self, 'checks', 'fontDidOpen')
-
 
         padding = 10
-        # buttonHeight = 20
-        # columnFonts = 230
-        # columnGlyphs = 130
         listHeight = 240
         width = 310
         height = 320
@@ -38,7 +32,6 @@ class fontWindow(object):
         self.w = FloatingWindow((width, height), 'FontWindow', autosaveName=key)
 
         x = y = padding
-        # y += padding
         self.w.fonts = List (
             (x, y, width - padding*2, listHeight),
             [f.info.familyName + ' ' + f.info.styleName for f in self.fontList],
@@ -46,11 +39,9 @@ class fontWindow(object):
             allowsMultipleSelection=False)
 
 
-
-        self.w.buttonCheck = Button((10, -30, 90, 15), 'update', sizeStyle = 'small', callback=self.updateWindow)
-        self.w.buttonClose = Button((110, -30, 90, 15), 'Close', sizeStyle = 'small', callback=self.closeWindow)
-        self.w.buttonOpen = Button((210, -55, 90, 15), 'Open Font', sizeStyle = 'small', callback=self.openFont)
-        self.w.buttonCloseFont = Button((210, -30, 90, 15), 'Close Font', sizeStyle = 'small', callback=self.closeFont)
+        self.w.buttonClose = Button((210, -30, 90, 15), 'Close Window', sizeStyle = 'small', callback=self.closeWindow)
+        self.w.buttonOpen = Button((10, -30, 90, 15), 'Open Font', sizeStyle = 'small', callback=self.openFont)
+        self.w.buttonCloseFont = Button((110, -30, 90, 15), 'Close Font', sizeStyle = 'small', callback=self.closeFont)
 
 
         self.w.open()
@@ -81,12 +72,12 @@ class fontWindow(object):
         f = OpenFont()
 
     def closeFont(self,sender):
-        closeFontWindow = self.requestedFont.document().getMainWindow()
-        closeFontWindow.close()
-
-
-
-
+        askCloseFont = AskYesNoCancel('Do you want to close the font?\n Unsaved changes will be lost!')
+        if askCloseFont == 1:
+            closeFontWindow = self.requestedFont.document().getMainWindow()
+            closeFontWindow.close()
+        else:
+            pass
 
 
 fontWindow()
