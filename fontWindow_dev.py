@@ -19,10 +19,7 @@ class fontWindow(object):
         self.fontList = fontsList
 
 
-        # padding = 10
-        # listHeight = 245
-        # width = 210
-        # height = 320
+
         padding = 10
         listHeight = 145
         width = 210
@@ -40,7 +37,7 @@ class fontWindow(object):
             (x, y, width - padding*2, listHeight),
             [f.info.familyName + ' ' + f.info.styleName for f in self.fontList],
             selectionCallback=self.getFontsCallback,
-            allowsMultipleSelection=True)
+            allowsMultipleSelection=False)
 
         self.w.buttonOpen = Button((10, -55, 90, 15), 'Open Font', sizeStyle = 'small', callback=self.openFont)
         self.w.buttonCloseFont = Button((110, -55, 90, 15), 'Close Font', sizeStyle = 'small', callback=self.closeFont)
