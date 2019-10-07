@@ -19,10 +19,7 @@ class fontWindow(object):
         self.fontList = fontsList
 
 
-        # padding = 10
-        # listHeight = 245
-        # width = 210
-        # height = 320
+
         padding = 10
         listHeight = 145
         width = 210
