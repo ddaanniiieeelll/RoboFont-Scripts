@@ -10,8 +10,9 @@ Also the output window gives the path to the saveCopied .ufo (it should be next 
 
 Turning this on shows a red rectangle around those points that are exactly at the metric lines (ascender, descender, xHeight and baseline).  
 
-## SoftOtterTool
-Used as a Start-Up Script this adds a custom panel to the inspector containing the outlineTool and the markingTool.
+~~## SoftOtterTool~~
+~~Used as a Start-Up Script this adds a custom panel to the inspector containing the outlineTool and the markingTool.~~
+Don’t use the soft otter tool atm, it’s a mess.
 
 ## outlineTool
 Let's you remove overlaps and set the direction of contours.
