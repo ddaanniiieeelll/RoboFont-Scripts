@@ -19,10 +19,11 @@ class fontWindow(object):
         self.fontList = fontsList
 
 
+
         padding = 10
-        listHeight = 240
-        width = 310
-        height = 320
+        listHeight = 145
+        width = 210
+        height = 220
 
         addObserver(self, 'updateWindow', 'fontWillOpen')
         addObserver(self, 'updateWindow', 'fontDidClose')
@@ -38,11 +39,9 @@ class fontWindow(object):
             selectionCallback=self.getFontsCallback,
             allowsMultipleSelection=False)
 
-
-        self.w.buttonClose = Button((210, -30, 90, 15), 'Close Window', sizeStyle = 'small', callback=self.closeWindow)
-        self.w.buttonOpen = Button((10, -30, 90, 15), 'Open Font', sizeStyle = 'small', callback=self.openFont)
-        self.w.buttonCloseFont = Button((110, -30, 90, 15), 'Close Font', sizeStyle = 'small', callback=self.closeFont)
-
+        self.w.buttonOpen = Button((10, -55, 90, 15), 'Open Font', sizeStyle = 'small', callback=self.openFont)
+        self.w.buttonCloseFont = Button((110, -55, 90, 15), 'Close Font', sizeStyle = 'small', callback=self.closeFont)
+        self.w.buttonClose = Button((110, -30, 90, 15), 'Close Window', sizeStyle = 'small', callback=self.closeWindow)
 
         self.w.open()
 
@@ -55,6 +54,7 @@ class fontWindow(object):
         self.requestedFont = self.fontList[num]
         activeFontWindow = self.requestedFont.document().getMainWindow()
         activeFontWindow.show()
+
 
     def updateWindow(self, sender):
         self.w.close()
@@ -76,6 +76,16 @@ class fontWindow(object):
         if askCloseFont == 1:
             closeFontWindow = self.requestedFont.document().getMainWindow()
             closeFontWindow.close()
+            #####
+            # f = AllFonts()
+            # selectionList = sender.getSelection()
+            # for i in selectionList:
+            #     num = i
+            # selectedFonts = self.fontList[num]
+            # selectedFonts.close()
+            #####
+
+
         else:
             pass
 

@@ -229,11 +229,11 @@ class outlineTool(BaseWindowController):
 
 
     def removeCurrentOverlaps(self, f):
-        self.progress.setTickCount(len(f))
+        #self.progress.setTickCount(len(f))
         print()
         print('>>> Removed overlap in')
         print('------------------------')
-        self.progress.update()
+        #self.progress.update()
         glyph = CurrentGlyph()
         compareGlyph = glyph.copy()
         compareGlyph.removeOverlap()

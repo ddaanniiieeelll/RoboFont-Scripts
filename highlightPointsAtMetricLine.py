@@ -50,7 +50,7 @@ class highlightPointsOnMetrics(BaseWindowController):
                         if p.y == asc or p.y == xhe or p.y == cap or p.y == dsc or p.y == 0:
 
                             # fill(1, 0, 0, .6)
-                            
+
                             fill(None)
                             stroke(0, 0.8, 0.8, .8)
                             strokeWidth(3 * sc)
