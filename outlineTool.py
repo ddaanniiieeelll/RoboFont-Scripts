@@ -1,3 +1,5 @@
+# menuTitle : ➰ Outline Tool
+
 from vanilla import *
 from mojo.UI import *
 from defconAppKit.windows.baseWindow import BaseWindowController

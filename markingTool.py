@@ -1,3 +1,5 @@
+# menuTitle : 🖍 Marking Tool
+
 from vanilla import *
 from mojo.UI import *
 from defconAppKit.windows.baseWindow import BaseWindowController
@@ -11,7 +13,7 @@ class markingTool(BaseWindowController):
         self.w.checkBoxOverlaps = CheckBox((10,10,-10,20), 'Overlaps', callback=self.checkBoxOverlapsCallback)
         self.w.checkBoxComponents = CheckBox((10,40,-10,20), 'Components', callback=self.checkBoxComponentsCallback)
         self.w.checkBoxComponentsAndOutlines = CheckBox((10,70,-10,20), 'Components and Outlines', callback=self.checkBoxComponentsAndOutlinesCallback)
-        # self.w.checkBoxUsedAsComponents = CheckBox((10,100,-10,20), 'Used as components')
+        self.w.checkBoxNoOverlaps = CheckBox((10,100,-10,20), 'No Overlaps')
 
         self.w.buttonCheck = Button((10, -30, 90, 15), 'Mark', sizeStyle = 'small', callback=self.checks)
         self.w.buttonGroup = Button((110, -30, 90, 15), 'Group', sizeStyle = 'small', callback=self.groups)
@@ -34,8 +36,8 @@ class markingTool(BaseWindowController):
     def checkBoxComponentsAndOutlinesCallback(self, sender):
         sender.get()
 
-    # def checkBoxUsedAsComponentsCallback(self, sender):
-    #     sender.get()
+    def checkBoxNoOverlapsCallback(self, sender):
+        sender.get()
 
 
 
@@ -55,10 +57,10 @@ class markingTool(BaseWindowController):
             self.checkComponentsAndOutlines(f)
             self.progress.close()
 
-        # if self.w.checkBoxUsedAsComponents.get():
-        #     self.progress = self.startProgress('looking where outline is used as component')
-        #     # self.checkUsedAsComponents(f)
-        #     self.progress.close()
+        if self.w.checkBoxNoOverlaps.get():
+            self.progress = self.startProgress('checking if overlaps are removed')
+            self.noOverlaps(f)
+            self.progress.close()
 
     def groups(self, sender):
         if self.w.checkBoxComponents.get():
@@ -101,7 +103,8 @@ class markingTool(BaseWindowController):
             self.progress.update()
             if len(glyph.contours) == 0 and len(glyph.components) > 0:
                 # glyph.prepareUndo('mark components')
-                glyph.markColor = 0, 0.25, 0.5, 0.35
+                # glyph.markColor = 0, 0.25, 0.5, 0.35
+                glyph.markColor = 0.8, 1, 0.4, 0.75
                 # glyph.performUndo()
                 print(glyph.name, end = ", ")
 
@@ -118,6 +121,22 @@ class markingTool(BaseWindowController):
             if len(glyph.contours) > 0 and len(glyph.components) > 0:
                 # glyph.prepareUndo('mark components and outlines')
                 glyph.markColor = 1, 0, 0.5, 0.35
+                # glyph.performUndo()
+                print(glyph.name, end = ", ")
+
+        # f.update()
+        print()
+
+    def noOverlaps(self, f):
+        self.progress.setTickCount(len(f))
+        print()
+        # print('>>> Glyphs combining components and outlines:')
+        # print('---------------------------------------------')
+        for glyph in f:
+            self.progress.update()
+            if not glyph.hasOverlap():
+                # glyph.prepareUndo('mark components and outlines')
+                glyph.markColor = 0.0 ,  0.25 ,  0.4, 0.35
                 # glyph.performUndo()
                 print(glyph.name, end = ", ")
 
