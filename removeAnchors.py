@@ -1,5 +1,6 @@
 # MenuTitle: Remove Anchors from selected glyphs
 
+
 def removeAnchors():
     anchor = False
     for glyphName in font.selectedGlyphNames:
@@ -13,6 +14,7 @@ def removeAnchors():
         print("Anchors removed")
     else:
         print("Selected glyphs had no anchors.")
+
 
 font = CurrentFont()
 if not len(font.selectedGlyphs):

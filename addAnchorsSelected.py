@@ -2,6 +2,7 @@
 
 import ezui
 
+
 class DemoController(ezui.WindowController):
 
     font = CurrentFont()
@@ -16,16 +17,13 @@ class DemoController(ezui.WindowController):
         (?)          @helpButton
         """
         descriptionData = dict(
-            anchorName=dict(
-                placeholder="Anchor",
-                valueType="string"
-            )
+            anchorName=dict(placeholder="Anchor", valueType="string")
         )
         self.w = ezui.EZWindow(
             title="Add Anchor",
             content=content,
             descriptionData=descriptionData,
-            controller=self
+            controller=self,
         )
 
     def started(self):
@@ -44,7 +42,9 @@ class DemoController(ezui.WindowController):
                 continue
             horizontalPosition = width / 2
             with glyph.undo("add Anchor"):
-                glyph.appendAnchor(anchorName, (horizontalPosition, self.font.info.xHeight))
+                glyph.appendAnchor(
+                    anchorName, (horizontalPosition, self.font.info.xHeight)
+                )
 
     def button2Callback(self, sender):
         anchorName = self.anchorNameCallback(self.w.getItem("anchorName"))
@@ -55,7 +55,9 @@ class DemoController(ezui.WindowController):
                 continue
             horizontalPosition = width / 2
             with glyph.undo("add Anchor"):
-                glyph.appendAnchor(anchorName, (horizontalPosition, self.font.info.capHeight))
+                glyph.appendAnchor(
+                    anchorName, (horizontalPosition, self.font.info.capHeight)
+                )
 
     def button3Callback(self, sender):
         anchorName = self.anchorNameCallback(self.w.getItem("anchorName"))
@@ -66,7 +68,9 @@ class DemoController(ezui.WindowController):
                 continue
             horizontalPosition = width / 2
             with glyph.undo("add Anchor"):
-                glyph.appendAnchor(anchorName, (horizontalPosition, self.font.info.ascender))
+                glyph.appendAnchor(
+                    anchorName, (horizontalPosition, self.font.info.ascender)
+                )
 
     def button4Callback(self, sender):
         anchorName = self.anchorNameCallback(self.w.getItem("anchorName"))
@@ -81,5 +85,6 @@ class DemoController(ezui.WindowController):
 
     def helpButtonCallback(self, sender):
         print("Help button pressed")
+
 
 DemoController()
