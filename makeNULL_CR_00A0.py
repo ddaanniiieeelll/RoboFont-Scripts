@@ -6,7 +6,7 @@
 f = CurrentFont()
 
 # define glyph names
-newGlyphs = ['NULL', 'CR', '00A0', 'zerowidthnobreakspace']
+newGlyphs = ['NULL', 'CR', 'uni00A0', 'zerowidthnobreakspace']
 
 # check if glyphs are already present and delete them
 for glyphName in newGlyphs:
@@ -19,17 +19,17 @@ for glyphName in newGlyphs:
     
 # give CR and 00A0 the same width as space
 f['CR'].width = f['space'].width
-f['00A0'].width = f['space'].width
+f['uni00A0'].width = f['space'].width
 
 # add proper unicodes
 unicode_dict = {
     'NULL': 0,
     'CR': 13,
-    '00A0': 160,
+    'uni00A0': 160,
     'zerowidthnobreakspace': 65279
 }
 
 for k, v in unicode_dict.items():
     f[k].unicode = v
     
-print('Added NULL, CR, 00A0 and FEFF to font.\nPlease sort again.')
+print('Added NULL, CR, uni00A0 and FEFF to font.\nPlease sort again.')
