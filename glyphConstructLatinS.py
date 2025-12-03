@@ -1,13 +1,14 @@
 # MenuTitle: Glyph Construct Latin S
 
-# delete icecream stuff before merging as it is just used for debugging
-from icecream import ic
 
-from glyphConstruction import ParseGlyphConstructionListFromString, GlyphConstructionBuilder
+from glyphConstruction import (
+    ParseGlyphConstructionListFromString,
+    GlyphConstructionBuilder,
+)
 
 # Define the glyph construction recipe
 # keep glyph constructions in a separate txt file to keep the script clean
-with open('constructionRecipes/glyphConstructionLatinS.txt', 'r') as file:
+with open("constructionRecipes/glyphConstructionLatinS.txt", "r") as file:
     txt = file.read()
 
 constructions = ParseGlyphConstructionListFromString(txt)
@@ -17,14 +18,12 @@ font = CurrentFont()
 # collect glyphs to ignore if they already exist in the font
 ignoreExisting = []
 for glyph in font:
-    for line in txt.split('\n'):
+    for line in txt.split("\n"):
         if line:
-            glyph_name = line.split('=')[0].strip()
+            glyph_name = line.split("=")[0].strip()
             if glyph.name == glyph_name:
                 ignoreExisting.append(glyph.name)
 
-# delete icecream stuff before merging as it is just used for debugging
-ic(ignoreExisting)
 
 # iterate over glyph construction recipes
 for construction in constructions:
